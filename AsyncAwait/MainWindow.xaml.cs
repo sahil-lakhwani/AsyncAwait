@@ -46,7 +46,9 @@ namespace AsyncAwait
                     this.pause.IsEnabled = false;
                     this.myBar.Value = 0.0;
                     this.myLabel.Content = (object)0;
+                    this.pause.Content = "Pause";
 
+                    this.m_pauseTokeSource.IsPaused = !this.m_pauseTokeSource.IsPaused;
                     
                     cancellationTokenSource.Cancel();
                 });
@@ -74,9 +76,7 @@ namespace AsyncAwait
 
         public async Task count(CancellationToken token,Progress<int> progressHandler, PauseToken pauseToken)
         {
-            IProgress<int> progress = (IProgress<int>)progressHandler;
-           
-
+            IProgress<int> progress = (IProgress<int>)progressHandler;          
           
             List<int> li3 = Enumerable.Range(0,101).ToList();
             try
@@ -84,15 +84,15 @@ namespace AsyncAwait
                 for (int i = 0; i < li3.Count; i++)
                 {
                     Thread.Sleep(200);
-                    await pauseToken.WaitWhilePausedAsync();
-                    if (progress != null)
-                        progress.Report(i);
                     if (token.IsCancellationRequested)
                     {
-                        this.m_pauseTokeSource.IsPaused = !this.m_pauseTokeSource.IsPaused;
-                       
+                        
+                        
                         break;
                     }
+                    await pauseToken.WaitWhilePausedAsync();
+                    if (progress != null)
+                        progress.Report(i);                   
                 }
             }
             catch (Exception e)

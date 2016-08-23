@@ -9,3 +9,10 @@ of any manual threads or background workers. Notice how IProgress is used to not
 The standard CancellationToken is used to cancel the async Task. 
 The PauseTokenSource by Stephen Toub is also used here, to very elegantly pause the async Task.
 
+
+Cancellation issue when awaiting for the PauseToken:
+
+"A task cannot be cancelled when it is not running yet" I learnt it [here](https://johnbadams.wordpress.com/2012/03/10/understanding-cancellationtokensource-with-tasks/#comment-94)
+
+In this example, if the task is paused and then cancelled, it doesn't actually get cancelled.
+So I had to trick around by negating the value of isPaused, so that the task would first actually run and immediately be cancelled.
